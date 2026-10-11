@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dietinha">
+<meta name="theme-color" content="#fff0f4">
+<title>Dietinha 🍓</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff5f8; --card:#ffffff; --ink:#4a3a4f; --muted:#a592a9;
+  --pink:#ff8fb1; --pink2:#ff6f9c; --rose:#ffe0ea; --lilac:#e6dcff; --peach:#ffe3d1;
+  --mint:#d3f5e5; --butter:#fff3bf; --sky:#d8ecff;
+  --shadow:0 6px 18px rgba(255,143,177,.22);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Quicksand',system-ui,-apple-system,sans-serif;font-weight:600}
+body{
+  background:
+    radial-gradient(circle at 10% 0%, #ffe3ee 0, transparent 40%),
+    radial-gradient(circle at 100% 20%, #ece3ff 0, transparent 38%),
+    radial-gradient(circle at 0% 100%, #ffeede 0, transparent 40%), var(--bg);
+  background-attachment:fixed;
+  padding-top:env(safe-area-inset-top,0px);
+}
+#app{max-width:520px;margin:0 auto;padding:14px 14px calc(96px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{margin:0}
+.logo{font-family:'Pacifico',cursive;font-size:30px;color:var(--pink2);text-align:center;margin:4px 0 12px;text-shadow:2px 2px 0 #fff}
+.card{background:var(--card);border-radius:24px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow);border:2px solid #fff}
+.card h2{font-size:18px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sub{color:var(--muted);font-size:13px;font-weight:600}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.between{justify-content:space-between}
+
+/* date nav */
+.datenav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.datenav .d{font-size:17px;text-transform:capitalize;text-align:center}
+.round{width:40px;height:40px;border-radius:50%;border:none;background:#fff;box-shadow:var(--shadow);font-size:18px;color:var(--pink2);font-family:inherit;cursor:pointer}
+.round:disabled{opacity:.3}
+
+/* meals */
+.meal{display:flex;align-items:center;gap:12px;padding:14px;border-radius:22px;margin-bottom:12px;cursor:pointer;transition:transform .15s;border:2px solid #fff;box-shadow:var(--shadow)}
+.meal:active{transform:scale(.97)}
+.meal.c0{background:var(--rose)} .meal.c1{background:var(--lilac)} .meal.c2{background:var(--peach)} .meal.c3{background:var(--mint)}
+.meal.c4{background:var(--butter)} .meal.c5{background:var(--sky)}
+.bubble{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;flex:none}
+.meal .name{font-size:17px;font-weight:700}
+.meal .desc{font-size:12.5px;color:#7a6880;margin-top:2px;line-height:1.35}
+.meal .time{font-size:12px;color:var(--pink2);font-weight:700}
+.chk{width:34px;height:34px;border-radius:50%;border:3px solid #fff;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;color:#fff}
+.meal.done .chk{background:var(--pink2);box-shadow:0 0 0 3px #fff}
+.meal.done .name{text-decoration:line-through;text-decoration-color:var(--pink2);opacity:.75}
+
+.bar{height:14px;border-radius:99px;background:var(--rose);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ffb3cc,var(--pink2));transition:width .4s}
+
+/* buttons */
+.btn{border:none;border-radius:99px;padding:12px 18px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;background:var(--pink2);color:#fff;box-shadow:0 4px 0 #e0527f;transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e0527f}
+.btn.soft{background:var(--rose);color:var(--pink2);box-shadow:0 4px 0 #f5c1d1}
+.btn.lilac{background:var(--lilac);color:#7a5fd0;box-shadow:0 4px 0 #cbbcf5}
+.btn.mint{background:var(--mint);color:#2f9a6e;box-shadow:0 4px 0 #b4e6cf}
+.btn.small{padding:8px 14px;font-size:13px}
+.btn.full{width:100%}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns .btn{flex:1}
+
+/* extras */
+.slot{background:#fff9fb;border:2px dashed #ffc6d8;border-radius:20px;padding:12px;margin-bottom:10px}
+.slot.ok{background:var(--mint);border-color:#fff;border-style:solid}
+.slot.bad{background:var(--peach);border-color:#fff;border-style:solid}
+.slot .t{font-weight:700;margin-bottom:8px}
+textarea,input[type=text],input[type=number],input[type=time],input[type=date],input:not([type]),select{
+  width:100%;border:2px solid #ffd3e1;border-radius:16px;padding:11px 12px;font-family:inherit;font-weight:600;font-size:15px;color:var(--ink);background:#fff;outline:none}
+textarea:focus,input:focus{border-color:var(--pink)}
+textarea{resize:none;min-height:70px;margin-bottom:8px}
+.extra-item{display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:16px;padding:10px 12px;margin-bottom:8px;border:2px solid var(--peach)}
+.x{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);padding:0 4px}
+
+/* analysis */
+.analysis{background:linear-gradient(135deg,#fff 0%,#fff0f6 60%,#f1eaff 100%)}
+.big{font-size:44px;text-align:center;margin:4px 0}
+.title{text-align:center;font-size:20px;font-weight:700;color:var(--pink2)}
+.goal{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:14.5px}
+.pill{display:inline-block;background:var(--rose);color:var(--pink2);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:0 12px calc(10px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:10}
+nav .in{pointer-events:auto;width:100%;max-width:496px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:30px;display:flex;padding:6px;box-shadow:0 8px 26px rgba(255,111,156,.3);border:2px solid #fff}
+nav button{flex:1;border:none;background:none;font-family:inherit;font-weight:700;font-size:11px;color:var(--muted);padding:8px 0;border-radius:24px;cursor:pointer}
+nav button span{display:block;font-size:22px;margin-bottom:1px}
+nav button.on{background:var(--rose);color:var(--pink2)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{border-radius:22px;padding:14px;text-align:center;border:2px solid #fff;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:26px;line-height:1.1;margin:2px 0}
+.stat small{color:#7a6880;font-size:12px}
+.s0{background:var(--rose)}.s1{background:var(--lilac)}.s2{background:var(--peach)}.s3{background:var(--mint)}
+
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.heat .h{font-size:11px;text-align:center;color:var(--muted)}
+.cell{aspect-ratio:1;border-radius:14px;background:#fff6f9;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:2px solid transparent}
+.cell.today{border-color:var(--pink)}
+.cell.empty{background:transparent;cursor:default}
+.cell small{font-size:10px;color:var(--muted)}
+.weekrow{display:flex;align-items:center;gap:10px;margin:10px 0}
+.weekrow .lbl{width:78px;font-size:12px;color:var(--muted)}
+
+/* settings */
+label.l{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.mrow{background:#fff9fb;border:2px solid #ffe0ea;border-radius:20px;padding:10px;margin-bottom:10px;display:grid;grid-template-columns:56px 1fr 96px;gap:8px}
+.mrow .full{grid-column:1/-1}
+.mrow input.emo{text-align:center;font-size:20px;padding:8px 4px}
+.switch{display:flex;align-items:center;justify-content:space-between}
+.toggle{width:54px;height:30px;border-radius:99px;background:#ead9e0;position:relative;border:none;cursor:pointer;transition:.2s}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.toggle.on{background:var(--pink2)}
+.toggle.on::after{left:27px}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--pink2);font-weight:700}
+details p,details li{font-size:13.5px;line-height:1.5}
+.note{background:var(--butter);border-radius:16px;padding:10px 12px;font-size:13px;line-height:1.45;margin-top:10px}
+.banner{background:var(--butter);border-radius:20px;padding:12px 14px;margin-bottom:14px;font-size:14px;cursor:pointer;border:2px solid #fff;box-shadow:var(--shadow)}
+
+#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-90px);background:#fff;color:var(--pink2);padding:10px 18px;border-radius:99px;box-shadow:0 8px 24px rgba(255,111,156,.35);font-weight:700;transition:transform .3s;z-index:50;max-width:90%;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+.conf{position:fixed;top:-30px;font-size:24px;z-index:40;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.6}}
+svg text{font-family:'Quicksand',sans-serif;font-weight:700}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="logo">Dietinha 🍓</div>
+  <main id="view"></main>
+</div>
+<nav><div class="in">
+  <button data-tab="hoje"><span>🌸</span>Hoje</button>
+  <button data-tab="peso"><span>🎀</span>Peso</button>
+  <button data-tab="prog"><span>✨</span>Progresso</button>
+  <button data-tab="cfg"><span>⚙️</span>Ajustes</button>
+</div></nav>
+<div id="toast"></div>
+
+<script>
+/* ============ utilidades ============ */
+const KEY='dietinha_v1';
+const $=s=>document.querySelector(s);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return fmt(d)};
+const today=()=>fmt(new Date());
+const tmin=t=>{const [h,m]=(t||'0:0').split(':').map(Number);return h*60+m};
+const byTime=(a,b)=>tmin(a.time)-tmin(b.time);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shortDate=s=>parse(s).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+
+/* ============ estado ============ */
+function defaults(){return{
+  meals:[
+    {id:'m1',emoji:'🍓',name:'Desjejum',time:'09:30',desc:'No trabalho: porção de frutas + barrinha de cereal',msg:''},
+    {id:'m2',emoji:'🍛',name:'Almoço',time:'12:30',desc:'Comida caseira, com proteína e pelo menos 1 alimento fonte de fibra (cru ou cozido)',msg:''},
+    {id:'m3',emoji:'🥖',name:'Lanche',time:'16:00',desc:'Pão francês + mussarela + requeijão light + cappuccino proteico (30g whey, 200–250 mL leite magro, café, canela)',msg:''},
+    {id:'m4',emoji:'🍕',name:'Jantar',time:'19:30',desc:'Marmita congelada (anotar qual!) ou pizza de pão árabe',msg:''}
+  ],
+  extraSlots:[
+    {id:'x1',emoji:'☀️',label:'Fim da manhã',time:'11:30'},
+    {id:'x2',emoji:'🌤️',label:'Fim da tarde',time:'17:30'},
+    {id:'x3',emoji:'🌙',label:'Noite',time:'21:30'}
+  ],
+  summaryTime:'22:00',
+  goals:{minPct:80,maxExtras:1,weeklyGood:5},
+  days:{}, weights:[], targetWeight:null,
+  ntfy:{enabled:false,topic:'',server:'https://ntfy.sh'},
+  sched:{}
+}}
+let S=load();
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);const d=defaults();return {...d,...o,goals:{...d.goals,...(o.goals||{})},ntfy:{...d.ntfy,...(o.ntfy||{})}}}}catch(e){}
+  return defaults();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('⚠️ Não consegui salvar')}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+let ui={tab:'hoje',date:today(),extraForm:null,range:'90',importOpen:false};
+
+function rec(date){ if(!S.days[date]) S.days[date]={done:{},extras:[],noExtra:{},closed:false,total:S.meals.length}; return S.days[date]; }
+
+/* ============ análise do dia ============ */
+const STATUS={
+  perfect:{emoji:'🏆',title:'Dia perfeito!',msg:'Tudo certinho, sem nenhuma escapadinha. Você arrasou! 💖'},
+  great:{emoji:'💖',title:'Dia ótimo!',msg:'Você bateu as metas do dia. Orgulho de você! ✨'},
+  almost:{emoji:'🌷',title:'Quase lá!',msg:'Bateu uma das metas. Amanhã você fecha as duas! 🌈'},
+  rough:{emoji:'🌱',title:'Dia pra recomeçar',msg:'Todo dia é uma chance nova. Sem culpa, só volta pro plano! 🤍'}
+};
+function analyze(date){
+  const r=S.days[date]||{done:{},extras:[],noExtra:{}};
+  const isPast=date<today();
+  let total,done;
+  if(isPast&&r.total){total=r.total;done=Object.values(r.done||{}).filter(Boolean).length;}
+  else{total=S.meals.length;done=S.meals.filter(m=>r.done&&r.done[m.id]).length;}
+  done=Math.min(done,total);
+  const pct=total?Math.round(done/total*100):0;
+  const extras=(r.extras||[]).length;
+  const answered=S.extraSlots.filter(s=>(r.noExtra&&r.noExtra[s.id])||(r.extras||[]).some(e=>e.slot===s.id)).length;
+  const g1=pct>=S.goals.minPct, g2=extras<=S.goals.maxExtras, g3=answered===S.extraSlots.length;
+  let key;
+  if(done===total&&total>0&&extras===0)key='perfect';
+  else if(g1&&g2)key='great';
+  else if(g1||g2)key='almost';
+  else key='rough';
+  const hasData=done>0||extras>0||answered>0;
+  return {done,total,pct,extras,answered,g1,g2,g3,hasData,key,st:STATUS[key]};
+}
+function isFinal(date){
+  if(date<today())return true;
+  if(date>today())return false;
+  const r=S.days[date];
+  if(r&&r.closed)return true;
+  const n=new Date();return n.getHours()*60+n.getMinutes()>=tmin(S.summaryTime);
+}
+
+/* ============ toast / confete ============ */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400)}
+function confetti(){
+  const em=['🎀','✨','💖','🌸','🍓','⭐','🌷'];
+  for(let i=0;i<26;i++){const s=document.createElement('span');s.className='conf';s.textContent=em[i%em.length];
+    s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.6+'s';s.style.fontSize=(18+Math.random()*16)+'px';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),3200);}
+}
+
+/* ============ view: HOJE ============ */
+function vHoje(){
+  const d=ui.date, r=S.days[d]||{done:{},extras:[],noExtra:{}}, a=analyze(d), isToday=d===today();
+  const label=parse(d).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const meals=[...S.meals].sort(byTime);
+  const fin=isFinal(d);
+  let h='';
+  if(!S.ntfy.enabled)h+=`<div class="banner" data-act="goCfg">🔔 Ative as notificações em <b>Ajustes</b> pra eu te lembrar das refeições!</div>`;
+  h+=`<div class="datenav"><button class="round" data-act="prevDay">◀</button><div class="d">${isToday?'🌸 Hoje<br><span class="sub">'+label+'</span>':label}</div><button class="round" data-act="nextDay" ${d>=today()?'disabled':''}>▶</button></div>`;
+  h+=`<div class="card"><div class="row between"><b>Refeições da dieta</b><span class="pill">${a.done}/${a.total}</span></div><div class="bar" style="margin-top:10px"><i style="width:${a.pct}%"></i></div></div>`;
+  meals.forEach((m,i)=>{
+    const done=!!(r.done&&r.done[m.id]);
+    h+=`<div class="meal c${i%6} ${done?'done':''}" data-act="toggle" data-id="${m.id}">
+      <div class="bubble">${esc(m.emoji)}</div>
+      <div class="grow"><div class="time">${esc(m.time)}</div><div class="name">${esc(m.name)}</div>${m.desc?`<div class="desc">${esc(m.desc)}</div>`:''}</div>
+      <div class="chk">${done?'✓':''}</div></div>`;
+  });
+  if(!meals.length)h+=`<div class="card sub">Nenhuma refeição cadastrada. Adicione em Ajustes ⚙️</div>`;
+
+  /* extras */
+  h+=`<div class="card"><h2>🍰 Refeições fora da dieta</h2>`;
+  S.extraSlots.forEach(s=>{
+    const hasX=(r.extras||[]).some(e=>e.slot===s.id), no=r.noExtra&&r.noExtra[s.id];
+    const cls=hasX?'bad':no?'ok':'';
+    h+=`<div class="slot ${cls}"><div class="t">${s.emoji} ${esc(s.label)} <span class="sub">· ${esc(s.time)}</span></div>`;
+    if(ui.extraForm===s.id){
+      h+=`<textarea id="xtext" placeholder="O que você comeu fora da dieta? 🍫"></textarea><div class="btns"><button class="btn small" data-act="saveExtra" data-slot="${s.id}">Salvar 💾</button><button class="btn small soft" data-act="cancelExtra">Cancelar</button></div>`;
+    }else if(hasX){
+      h+=`<div class="sub">🍫 Registrou ${(r.extras||[]).filter(e=>e.slot===s.id).length} extra(s)</div><div class="btns" style="margin-top:6px"><button class="btn small soft" data-act="openExtra" data-slot="${s.id}">+ outro</button></div>`;
+    }else if(no){
+      h+=`<div class="sub">✅ Nenhum extra nesse período</div><div class="btns" style="margin-top:6px"><button class="btn small soft" data-act="openExtra" data-slot="${s.id}">Na verdade comi algo</button></div>`;
+    }else{
+      h+=`<div class="btns"><button class="btn small mint" data-act="noExtra" data-slot="${s.id}">✅ Nenhum extra</button><button class="btn small soft" data-act="openExtra" data-slot="${s.id}">🍰 Comi algo</button></div>`;
+    }
+    h+=`</div>`;
+  });
+  if(ui.extraForm==='free'){
+    h+=`<textarea id="xtext" placeholder="O que você comeu fora da dieta? 🍫"></textarea><div class="btns"><button class="btn small" data-act="saveExtra" data-slot="free">Salvar 💾</button><button class="btn small soft" data-act="cancelExtra">Cancelar</button></div>`;
+  }else h+=`<button class="btn small lilac full" data-act="openExtra" data-slot="free">➕ Registrar um extra agora</button>`;
+  const ex=r.extras||[];
+  if(ex.length){
+    h+=`<div style="margin-top:12px" class="sub">Extras de ${isToday?'hoje':shortDate(d)}:</div>`;
+    ex.forEach(e=>{h+=`<div class="extra-item"><div class="grow">🍫 ${esc(e.text)}<div class="sub">${new Date(e.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div><button class="x" data-act="delExtra" data-id="${e.id}">✕</button></div>`});
+  }
+  h+=`</div>`;
+
+  /* análise */
+  h+=`<div class="card analysis"><h2>📊 Análise do dia ${fin?'':'<span class="pill">parcial</span>'}</h2>`;
+  if(fin||a.hasData){
+    h+=`<div class="big">${a.st.emoji}</div><div class="title">${fin?a.st.title:'Como está indo'}</div>`;
+    h+=`<div class="sub" style="text-align:center;margin:4px 0 10px">${fin?a.st.msg:'Feche o dia depois do jantar pra ver o resultado final 💕'}</div>`;
+  }else h+=`<div class="sub" style="margin-bottom:8px">Marque as refeições e responda os check-ins pra ver sua análise ✨</div>`;
+  h+=`<div class="goal">${a.g1?'✅':'⬜'} <span>Seguir ≥ ${S.goals.minPct}% da dieta <b>(${a.pct}%)</b></span></div>
+      <div class="goal">${a.g2?'✅':'⬜'} <span>No máx. ${S.goals.maxExtras} refeição fora da dieta <b>(${a.extras})</b></span></div>
+      <div class="goal">${a.g3?'✅':'⬜'} <span>Responder todos os check-ins <b>(${a.answered}/${S.extraSlots.length})</b></span></div>`;
+  if(isToday&&!fin)h+=`<button class="btn full" style="margin-top:10px" data-act="closeDay">Fechar o dia ✨</button>`;
+  if(isToday&&S.days[d]&&S.days[d].closed)h+=`<button class="btn soft small full" style="margin-top:10px" data-act="reopenDay">Reabrir o dia</button>`;
+  h+=`</div>`;
+  return h;
+}
+
+/* ============ view: PESO ============ */
+function chartSVG(){
+  let ws=[...S.weights].sort((a,b)=>a.date<b.date?-1:1);
+  if(ui.range!=='all'){const lim=addDays(today(),-parseInt(ui.range));ws=ws.filter(w=>w.date>=lim)}
+  if(ws.length<2)return `<div class="sub" style="text-align:center;padding:30px 0">📈 Registre pelo menos 2 pesos pra ver seu gráfico</div>`;
+  const W=340,H=210,L=36,R=14,T=20,B=30;
+  const vals=ws.map(w=>w.kg); if(S.targetWeight)vals.push(S.targetWeight);
+  let mn=Math.min(...vals)-0.8,mx=Math.max(...vals)+0.8;
+  const t0=parse(ws[0].date).getTime(),t1=parse(ws[ws.length-1].date).getTime();
+  const X=d=>L+((parse(d).getTime()-t0)/(t1-t0||1))*(W-L-R);
+  const Y=v=>T+(1-(v-mn)/(mx-mn))*(H-T-B);
+  const pts=ws.map(w=>[X(w.date),Y(w.kg)]);
+  let path=`M${pts[0][0]},${pts[0][1]}`;
+  for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],mx_=(x0+x1)/2;path+=` C${mx_},${y0} ${mx_},${y1} ${x1},${y1}`}
+  const area=path+` L${pts[pts.length-1][0]},${H-B} L${pts[0][0]},${H-B} Z`;
+  let grid='';
+  for(let i=0;i<4;i++){const v=mn+(mx-mn)*i/3,y=Y(v);grid+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#ffe0ea" stroke-dasharray="3 4"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#a592a9" text-anchor="end">${v.toFixed(1)}</text>`}
+  let target='';
+  if(S.targetWeight){const y=Y(S.targetWeight);target=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#9b7fe8" stroke-width="2" stroke-dasharray="6 5"/><text x="${W-R}" y="${y-5}" font-size="10" fill="#9b7fe8" text-anchor="end">meta 🎯 ${S.targetWeight}</text>`}
+  const showAll=ws.length<=12;
+  const dots=pts.map((p,i)=>{
+    const last=i===pts.length-1;
+    return `<circle cx="${p[0]}" cy="${p[1]}" r="${last?6:4}" fill="#fff" stroke="#ff6f9c" stroke-width="3"/>`+((showAll||last)?`<text x="${p[0]}" y="${p[1]-10}" font-size="10.5" fill="#ff6f9c" text-anchor="${i===0?'start':last?'end':'middle'}">${ws[i].kg}</text>`:'')}).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de peso">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8fb1" stop-opacity=".45"/><stop offset="1" stop-color="#ff8fb1" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${target}<path d="${area}" fill="url(#g)"/><path d="${path}" fill="none" stroke="#ff6f9c" stroke-width="3.5" stroke-linecap="round"/>${dots}
+    <text x="${L}" y="${H-8}" font-size="10" fill="#a592a9">${shortDate(ws[0].date)}</text>
+    <text x="${W-R}" y="${H-8}" font-size="10" fill="#a592a9" text-anchor="end">${shortDate(ws[ws.length-1].date)}</text></svg>`;
+}
+function vPeso(){
+  const ws=[...S.weights].sort((a,b)=>a.date<b.date?-1:1);
+  const first=ws[0],last=ws[ws.length-1];
+  const diff=first&&last?(last.kg-first.kg):0;
+  const left=S.targetWeight&&last?(last.kg-S.targetWeight):null;
+  let h=`<div class="card"><h2>🎀 Registrar peso</h2>
+    <div class="row"><div class="grow"><input id="wkg" inputmode="decimal" placeholder="Ex: 62,4 kg"></div><div class="grow"><input type="date" id="wdate" value="${today()}" max="${today()}"></div></div>
+    <button class="btn full" style="margin-top:10px" data-act="addWeight">Salvar peso 💖</button></div>`;
+  h+=`<div class="stats">
+    <div class="stat s0"><small>Peso atual</small><b>${last?last.kg+' kg':'—'}</b><small>${last?shortDate(last.date):''}</small></div>
+    <div class="stat s1"><small>Variação total</small><b>${first&&last?(diff>0?'+':'')+diff.toFixed(1)+' kg':'—'}</b><small>${first?'desde '+shortDate(first.date):''}</small></div>
+    <div class="stat s2"><small>Meta 🎯</small><b>${S.targetWeight?S.targetWeight+' kg':'—'}</b><small>${left!==null?(left>0?'faltam '+left.toFixed(1)+' kg':'meta batida! 🎉'):'defina abaixo'}</small></div>
+    <div class="stat s3"><small>Menor peso</small><b>${ws.length?Math.min(...ws.map(w=>w.kg))+' kg':'—'}</b><small>${ws.length} registros</small></div></div>`;
+  h+=`<div class="card"><div class="row between" style="margin-bottom:6px"><h2 style="margin:0">📈 Evolução</h2>
+    <select id="range" style="width:auto;padding:6px 10px">${[['30','30 dias'],['90','90 dias'],['180','6 meses'],['all','Tudo']].map(o=>`<option value="${o[0]}" ${ui.range===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>${chartSVG()}</div>`;
+  h+=`<div class="card"><h2>🎯 Peso meta</h2><div class="row"><div class="grow"><input id="wtarget" inputmode="decimal" placeholder="Ex: 58" value="${S.targetWeight??''}"></div><button class="btn small lilac" data-act="saveTarget">Salvar</button></div></div>`;
+  if(ws.length){
+    h+=`<div class="card"><h2>🗓️ Histórico</h2>`;
+    [...ws].reverse().slice(0,20).forEach(w=>{h+=`<div class="extra-item" style="border-color:var(--rose)"><div class="grow"><b>${w.kg} kg</b> <span class="sub">· ${parse(w.date).toLocaleDateString('pt-BR')}</span></div><button class="x" data-act="delWeight" data-date="${w.date}">✕</button></div>`});
+    h+=`</div>`;
+  }
+  return h;
+}
+
+/* ============ view: PROGRESSO ============ */
+function mondayOf(s){const d=parse(s);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return fmt(d)}
+function rangeStats(from,to){
+  let n=0,sum=0,great=0,extras=0;
+  for(let d=from;d<=to;d=addDays(d,1)){
+    if(d>today())break;
+    const a=analyze(d);
+    if(!a.hasData)continue;
+    n++;sum+=a.pct;extras+=a.extras;if(a.g1&&a.g2)great++;
+  }
+  return {n,avg:n?Math.round(sum/n):null,extras,great};
+}
+function streak(){
+  let s=0,d=today();
+  if(!isFinal(d))d=addDays(d,-1);
+  for(let i=0;i<400;i++){const a=analyze(d);if(a.hasData&&a.g1&&a.g2){s++;d=addDays(d,-1)}else break}
+  return s;
+}
+function vProg(){
+  const t=today(), w7=rangeStats(addDays(t,-6),t), w30=rangeStats(addDays(t,-29),t);
+  const st=streak();
+  let h=`<div class="stats">
+    <div class="stat s0"><small>Sequência 🔥</small><b>${st}</b><small>dia(s) batendo as metas</small></div>
+    <div class="stat s1"><small>Adesão (7 dias)</small><b>${w7.avg===null?'—':w7.avg+'%'}</b><small>média das refeições</small></div>
+    <div class="stat s2"><small>Extras (7 dias)</small><b>${w7.extras}</b><small>fora da dieta</small></div>
+    <div class="stat s3"><small>Adesão (30 dias)</small><b>${w30.avg===null?'—':w30.avg+'%'}</b><small>${w30.extras} extras no mês</small></div></div>`;
+  const wk=rangeStats(mondayOf(t),t);
+  h+=`<div class="card"><h2>🎯 Meta da semana</h2><div class="row between"><span>Dias que bateu as metas</span><span class="pill">${wk.great}/${S.goals.weeklyGood}</span></div>
+    <div class="bar" style="margin-top:8px"><i style="width:${Math.min(100,Math.round(wk.great/S.goals.weeklyGood*100))}%"></i></div>
+    <div class="sub" style="margin-top:8px">${wk.great>=S.goals.weeklyGood?'Meta da semana batida! 🎉':'Faltam '+(S.goals.weeklyGood-wk.great)+' dia(s) ótimo(s) 💪'}</div></div>`;
+  /* calendário */
+  const start=addDays(mondayOf(t),-28);
+  h+=`<div class="card"><h2>📅 Últimas semanas</h2><div class="heat">${['S','T','Q','Q','S','S','D'].map(x=>`<div class="h">${x}</div>`).join('')}`;
+  for(let i=0;i<35;i++){
+    const d=addDays(start,i);
+    if(d>t){h+=`<div class="cell empty"></div>`;continue}
+    const a=analyze(d);
+    h+=`<div class="cell ${d===t?'today':''}" data-act="openDay" data-date="${d}">${a.hasData?a.st.emoji:'<small>'+parse(d).getDate()+'</small>'}</div>`;
+  }
+  h+=`</div><div class="sub" style="margin-top:10px">🏆 perfeito · 💖 ótimo · 🌷 quase · 🌱 recomeço — toque no dia pra ver/editar</div></div>`;
+  /* semanas */
+  h+=`<div class="card"><h2>📊 Semana a semana</h2>`;
+  for(let i=0;i<4;i++){
+    const from=addDays(mondayOf(t),-7*i), to=addDays(from,6), s=rangeStats(from,to);
+    h+=`<div class="weekrow"><div class="lbl">${i===0?'Esta semana':shortDate(from)+' – '+shortDate(to)}</div><div class="grow"><div class="bar"><i style="width:${s.avg||0}%"></i></div></div><div style="width:92px;font-size:12px;text-align:right">${s.avg===null?'—':s.avg+'%'} · 🍰${s.extras}</div></div>`;
+  }
+  h+=`</div>`;
+  /* extras recentes */
+  const list=[];
+  Object.keys(S.days).forEach(d=>(S.days[d].extras||[]).forEach(e=>list.push({d,...e})));
+  list.sort((a,b)=>b.ts-a.ts);
+  h+=`<div class="card"><h2>🍫 Escapadinhas recentes</h2>`;
+  if(!list.length)h+=`<div class="sub">Nada registrado ainda 🌈</div>`;
+  list.slice(0,15).forEach(e=>{h+=`<div class="extra-item"><div class="grow">${esc(e.text)}<div class="sub">${parse(e.d).toLocaleDateString('pt-BR')}</div></div></div>`});
+  h+=`</div>`;
+  return h;
+}
+
+/* ============ view: AJUSTES ============ */
+function vCfg(){
+  const n=Object.keys(S.sched).length;
+  let h=`<div class="card"><h2>🔔 Notificações (ntfy)</h2>
+    <div class="switch"><span>Ativar lembretes</span><button class="toggle ${S.ntfy.enabled?'on':''}" data-act="toggleNtfy" aria-label="ativar"></button></div>
+    <label class="l">Nome do tópico (secreto, só você sabe)</label>
+    <div class="row"><div class="grow"><input id="ntopic" value="${esc(S.ntfy.topic)}" placeholder="dieta-xxxxxxxx" autocapitalize="off" autocorrect="off"></div><button class="btn small lilac" data-act="genTopic">🎲</button></div>
+    <label class="l">Servidor</label><input id="nserver" value="${esc(S.ntfy.server)}" autocapitalize="off" autocorrect="off">
+    <div class="btns" style="margin-top:12px"><button class="btn small" data-act="testNtfy">Enviar teste 🧪</button><button class="btn small soft" data-act="syncNtfy">Agendar agora 📅</button></div>
+    <div class="sub" style="margin-top:8px">${n} notificações agendadas à frente.</div>
+    <details><summary>Como configurar (passo a passo)</summary><ol>
+      <li>Instale o app <b>ntfy</b> da App Store (grátis).</li>
+      <li>No ntfy toque em <b>+</b> e assine o mesmo tópico que está acima (servidor ntfy.sh).</li>
+      <li>Permita as notificações do ntfy no iPhone.</li>
+      <li>Ative aqui o botão e toque em <b>Enviar teste</b>.</li></ol>
+      <div class="note">⏳ O ntfy agenda mensagens com até <b>3 dias</b> de antecedência. O Dietinha agenda sozinho sempre que você abre o app — então é só abrir <b>pelo menos 1 vez a cada 3 dias</b> (o que você vai fazer, né? 😉).<br><br>Se você mudar horários, as notificações <i>já agendadas</i> ainda disparam nos horários antigos até acabarem (máx. 3 dias).<br><br>Dica: abra o app pelo <b>ícone da tela inicial</b>, não pela notificação (a notificação abre no Safari, que tem dados separados).</div></details></div>`;
+
+  h+=`<div class="card"><h2>🍽️ Itens da dieta</h2><div class="sub" style="margin-bottom:10px">Mudou o plano na consulta? É só editar aqui 💕</div>`;
+  [...S.meals].sort(byTime).forEach(m=>{
+    h+=`<div class="mrow">
+      <input class="emo" value="${esc(m.emoji)}" data-f="meal" data-id="${m.id}" data-k="emoji">
+      <input value="${esc(m.name)}" data-f="meal" data-id="${m.id}" data-k="name" placeholder="Nome">
+      <input type="time" value="${esc(m.time)}" data-f="meal" data-id="${m.id}" data-k="time">
+      <input class="full" value="${esc(m.desc)}" data-f="meal" data-id="${m.id}" data-k="desc" placeholder="O que comer (descrição)">
+      <input class="full" value="${esc(m.msg)}" data-f="meal" data-id="${m.id}" data-k="msg" placeholder="Texto da notificação (padrão: Hora do ${esc(m.name.toLowerCase())})">
+      <button class="btn small soft full" data-act="delMeal" data-id="${m.id}">🗑️ Remover</button></div>`;
+  });
+  h+=`<button class="btn lilac full" data-act="addMeal">➕ Nova refeição</button></div>`;
+
+  h+=`<div class="card"><h2>🍰 Check-ins de extras</h2><div class="sub" style="margin-bottom:6px">Horários em que pergunto se você comeu algo fora da dieta</div>`;
+  S.extraSlots.forEach(s=>{h+=`<div class="row" style="margin-bottom:8px"><span style="width:130px">${s.emoji} ${esc(s.label)}</span><input type="time" value="${esc(s.time)}" data-f="slot" data-id="${s.id}" data-k="time"></div>`});
+  h+=`<div class="row"><span style="width:130px">✨ Fechar o dia</span><input type="time" value="${esc(S.summaryTime)}" data-f="summary"></div></div>`;
+
+  h+=`<div class="card"><h2>🎯 Metas</h2>
+    <label class="l">Seguir pelo menos (% das refeições do dia)</label><input type="number" min="0" max="100" value="${S.goals.minPct}" data-f="goal" data-k="minPct">
+    <label class="l">Máx. de refeições fora da dieta por dia</label><input type="number" min="0" max="10" value="${S.goals.maxExtras}" data-f="goal" data-k="maxExtras">
+    <label class="l">Dias ótimos por semana (meta semanal)</label><input type="number" min="1" max="7" value="${S.goals.weeklyGood}" data-f="goal" data-k="weeklyGood"></div>`;
+
+  h+=`<div class="card"><h2>💾 Backup</h2><div class="sub" style="margin-bottom:10px">Seus dados ficam só neste aparelho. Faça backup de vez em quando!</div>
+    <div class="btns"><button class="btn small mint" data-act="exportData">Copiar backup</button><button class="btn small soft" data-act="toggleImport">Restaurar</button></div>
+    ${ui.importOpen?`<textarea id="impbox" placeholder="Cole aqui o backup…" style="margin-top:10px;min-height:100px"></textarea><button class="btn small full" data-act="importData">Importar</button>`:''}
+    <details><summary>📲 Como instalar no iPhone</summary><ol><li>Abra o link do app no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> ⬆️ → <b>Adicionar à Tela de Início</b>.</li><li>Abra pelo ícone e configure tudo <b>depois</b> disso (o app instalado tem armazenamento próprio).</li></ol></details></div>`;
+  return h;
+}
+
+/* ============ render ============ */
+function render(){
+  const y=window.scrollY;
+  $('#view').innerHTML=({hoje:vHoje,peso:vPeso,prog:vProg,cfg:vCfg})[ui.tab]();
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab));
+  window.scrollTo(0,y);
+}
+function setTab(t){ui.tab=t;ui.extraForm=null;window.scrollTo(0,0);render()}
+
+/* ============ ações ============ */
+document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(b)setTab(b.dataset.tab)});
+
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const act=t.dataset.act,id=t.dataset.id;
+  switch(act){
+    case 'goCfg':setTab('cfg');break;
+    case 'prevDay':ui.date=addDays(ui.date,-1);render();break;
+    case 'nextDay':if(ui.date<today()){ui.date=addDays(ui.date,1);render()}break;
+    case 'toggle':{
+      const r=rec(ui.date);r.done[id]=!r.done[id];r.total=S.meals.length;save();render();
+      if(r.done[id]){const a=analyze(ui.date);if(a.done===a.total&&a.total>0){confetti();toast('Todas as refeições feitas! 🎀')}else toast('Boa! 💖')}
+      break;}
+    case 'noExtra':{const r=rec(ui.date);r.noExtra[t.dataset.slot]=true;save();render();toast('Anotado ✅');break;}
+    case 'openExtra':ui.extraForm=t.dataset.slot;render();setTimeout(()=>$('#xtext')&&$('#xtext').focus(),50);break;
+    case 'cancelExtra':ui.extraForm=null;render();break;
+    case 'saveExtra':{
+      const txt=($('#xtext').value||'').trim();if(!txt){toast('Escreve o que você comeu 🍫');return}
+      const r=rec(ui.date);const slot=t.dataset.slot;
+      r.extras.push({id:uid(),slot:slot==='free'?null:slot,text:txt,ts:Date.now()});
+      if(slot!=='free')delete r.noExtra[slot];
+      ui.extraForm=null;save();render();toast('Registrado, sem julgamentos 🤍');break;}
+    case 'delExtra':{const r=rec(ui.date);r.extras=r.extras.filter(x=>x.id!==id);save();render();break;}
+    case 'closeDay':{const r=rec(ui.date);r.closed=true;r.total=S.meals.length;save();render();const a=analyze(ui.date);if(a.key==='perfect'||a.key==='great')confetti();break;}
+    case 'reopenDay':{rec(ui.date).closed=false;save();render();break;}
+    case 'openDay':ui.date=t.dataset.date;setTab('hoje');break;
+
+    case 'addWeight':{
+      const kg=parseFloat(($('#wkg').value||'').replace(',','.'));const date=$('#wdate').value||today();
+      if(!kg||kg<20||kg>400){toast('Digite um peso válido ⚖️');return}
+      S.weights=S.weights.filter(w=>w.date!==date);S.weights.push({date,kg:Math.round(kg*10)/10});save();render();toast('Peso salvo 💖');break;}
+    case 'delWeight':S.weights=S.weights.filter(w=>w.date!==t.dataset.date);save();render();break;
+    case 'saveTarget':{const v=parseFloat(($('#wtarget').value||'').replace(',','.'));S.targetWeight=v>0?v:null;save();render();toast('Meta salva 🎯');break;}
+
+    case 'toggleNtfy':{
+      readNtfyInputs();
+      if(!S.ntfy.enabled&&!S.ntfy.topic)S.ntfy.topic='dieta-'+Math.random().toString(36).slice(2,12);
+      S.ntfy.enabled=!S.ntfy.enabled;save();render();
+      if(S.ntfy.enabled){toast('Notificações ativadas 🔔');syncNtfy(true)}
+      break;}
+    case 'genTopic':readNtfyInputs();S.ntfy.topic='dieta-'+Math.random().toString(36).slice(2,12);S.sched={};save();render();toast('Novo tópico! Assine no app ntfy 📲');break;
+    case 'testNtfy':readNtfyInputs();save();await sendNtfy({title:'🍓 Dietinha',message:'Tudo certo! Suas notificações estão funcionando 💖'},true);break;
+    case 'syncNtfy':readNtfyInputs();save();await syncNtfy(true);break;
+
+    case 'addMeal':S.meals.push({id:uid(),emoji:'🍽️',name:'Nova refeição',time:'15:00',desc:'',msg:''});save();render();break;
+    case 'delMeal':if(confirm('Remover essa refeição do plano?')){S.meals=S.meals.filter(m=>m.id!==id);save();render()}break;
+
+    case 'exportData':{
+      const txt=JSON.stringify(S);
+      try{await navigator.clipboard.writeText(txt);toast('Backup copiado! Cole num bloco de notas 📋')}
+      catch(e){ui.importOpen=true;render();const b=$('#impbox');if(b){b.value=txt;b.select()}toast('Copie o texto da caixa 📋')}
+      break;}
+    case 'toggleImport':ui.importOpen=!ui.importOpen;render();break;
+    case 'importData':{
+      try{const o=JSON.parse($('#impbox').value);if(!o.meals||!o.days)throw 0;S={...defaults(),...o};save();ui.importOpen=false;render();toast('Backup restaurado ✨')}
+      catch(e){toast('Backup inválido 😢')}
+      break;}
+  }
+});
+
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='range'){ui.range=t.value;render();return}
+  if(t.id==='ntopic'||t.id==='nserver'){readNtfyInputs();save();return}
+  const f=t.dataset.f;if(!f)return;
+  if(f==='meal'){const m=S.meals.find(x=>x.id===t.dataset.id);if(m){m[t.dataset.k]=t.value;save();if(t.dataset.k==='time')render()}}
+  else if(f==='slot'){const s=S.extraSlots.find(x=>x.id===t.dataset.id);if(s){s[t.dataset.k]=t.value;save()}}
+  else if(f==='summary'){S.summaryTime=t.value||'22:00';save()}
+  else if(f==='goal'){S.goals[t.dataset.k]=Math.max(0,parseInt(t.value)||0);save()}
+});
+function readNtfyInputs(){
+  const tp=$('#ntopic'),sv=$('#nserver');
+  if(tp)S.ntfy.topic=tp.value.trim().replace(/[^A-Za-z0-9_-]/g,'');
+  if(sv)S.ntfy.server=(sv.value.trim()||'https://ntfy.sh').replace(/\/+$/,'');
+}
+
+/* ============ ntfy ============ */
+async function sendNtfy(payload,verbose){
+  if(!S.ntfy.topic){if(verbose)toast('Defina um tópico primeiro 📝');return false}
+  try{
+    const r=await fetch(S.ntfy.server.replace(/\/+$/,'')+'/',{method:'POST',body:JSON.stringify({topic:S.ntfy.topic,...payload})});
+    if(!r.ok)throw new Error(r.status);
+    if(verbose&&!payload.delay)toast('Teste enviado! Olhe seu iPhone 📲');
+    return true;
+  }catch(err){if(verbose)toast('Não consegui enviar 😢 verifique a internet');return false}
+}
+function reminderItems(){
+  const items=[];
+  S.meals.forEach(m=>items.push({id:'m'+m.id,time:m.time,title:`${m.emoji} ${m.msg||('Hora do '+m.name.toLowerCase())}`,message:m.desc?m.desc.slice(0,140):'Depois marque no app ✅'}));
+  S.extraSlots.forEach(s=>items.push({id:s.id,time:s.time,title:'🍰 Comeu algo fora da dieta?',message:`Check-in: ${s.label.toLowerCase()}. Abra o app e me conte 💕`}));
+  items.push({id:'sum',time:S.summaryTime,title:'✨ Hora de fechar o dia',message:'Veja como foi seu dia na dieta 🌸'});
+  return items;
+}
+let syncing=false;
+async function syncNtfy(verbose){
+  if(!S.ntfy.enabled||!S.ntfy.topic||syncing){return}
+  syncing=true;
+  const now=Date.now(),horizon=now+71*3600*1000;
+  let ok=0,fail=0;
+  for(let d=0;d<=3;d++){
+    const date=addDays(today(),d);
+    for(const it of reminderItems()){
+      const [hh,mm]=it.time.split(':').map(Number);
+      const when=parse(date);when.setHours(hh,mm,0,0);const ts=when.getTime();
+      if(ts<now+60000||ts>horizon)continue;
+      const key=`${date}|${it.id}|${it.time}|${it.title}`;
+      if(S.sched[key])continue;
+      const res=await sendNtfy({title:it.title,message:it.message,delay:String(Math.floor(ts/1000))},false);
+      if(res){S.sched[key]=ts;ok++}else fail++;
+    }
+  }
+  Object.keys(S.sched).forEach(k=>{if(S.sched[k]<now-86400000)delete S.sched[k]});
+  save();syncing=false;
+  if(verbose)toast(fail?`Agendadas ${ok}, falharam ${fail} 😢`:ok?`${ok} lembretes agendados 📅`:'Tudo já estava agendado ✅');
+  if(ui.tab==='cfg')render();
+}
+
+/* ============ ícone do app (iPhone) ============ */
+(function(){
+  try{
+    const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,180,180);g.addColorStop(0,'#ffb3cc');g.addColorStop(1,'#ff6f9c');
+    x.fillStyle=g;x.fillRect(0,0,180,180);
+    x.font='96px serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🍓',90,98);
+    const l=document.createElement('link');l.rel='apple-touch-icon';l.href=c.toDataURL('image/png');document.head.appendChild(l);
+    const l2=document.createElement('link');l2.rel='icon';l2.href=c.toDataURL('image/png');document.head.appendChild(l2);
+  }catch(e){}
+})();
+
+/* ============ início ============ */
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    if(ui.date>today())ui.date=today();
+    if(!['cfg'].includes(ui.tab)||true)render();
+    syncNtfy(false);
+  }
+});
+render();
+syncNtfy(false);
+</script>
+</body>
+</html>
